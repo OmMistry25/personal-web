@@ -25,8 +25,8 @@ const About: React.FC = () => {
         try {
           // Fetch video ID
           const videoData = await getAboutVideo();
-          if (videoData && videoData.length > 0 && videoData[0].video_id) {
-            setVideoId(videoData[0].video_id);
+          if (videoData?.video_id) {
+            setVideoId(videoData.video_id);
           }
         } catch (error) {
           console.error('Error fetching data:', error);

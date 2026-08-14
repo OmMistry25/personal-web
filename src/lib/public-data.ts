@@ -16,7 +16,8 @@ export const getProjects = async (): Promise<Project[]> => {
   const { data, error } = await publicSupabase
     .from('projects')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('sort_order', { ascending: true })
+    .order('id', { ascending: true });
 
   if (error) throw error;
   return data || [];
@@ -26,7 +27,8 @@ export const getNotes = async (): Promise<Note[]> => {
   const { data, error } = await publicSupabase
     .from('notes')
     .select('*')
-    .order('sort_order', { ascending: true });
+    .order('sort_order', { ascending: true })
+    .order('id', { ascending: true });
 
   if (error) throw error;
   return data || [];
@@ -47,7 +49,8 @@ export const getWorkExperience = async (): Promise<WorkExperience[]> => {
   const { data, error } = await publicSupabase
     .from('work_experience')
     .select('*')
-    .order('created_at', { ascending: false });
+    .order('sort_order', { ascending: true })
+    .order('id', { ascending: true });
 
   if (error) throw error;
   return data || [];
@@ -68,27 +71,29 @@ export const getAboutItems = async (): Promise<AboutItem[]> => {
   const { data, error } = await publicSupabase
     .from('about_items')
     .select('*')
-    .order('sort_order', { ascending: true });
+    .order('sort_order', { ascending: true })
+    .order('id', { ascending: true });
 
   if (error) throw error;
   return data || [];
 };
 
-export const getAboutVideo = async (): Promise<AboutVideo[]> => {
+export const getAboutVideo = async (): Promise<AboutVideo | null> => {
   const { data, error } = await publicSupabase
     .from('about_video')
     .select('video_id')
-    .limit(1);
+    .maybeSingle();
 
   if (error) throw error;
-  return data || [];
+  return data;
 };
 
 export const getNowItems = async (): Promise<NowItem[]> => {
   const { data, error } = await publicSupabase
     .from('now_items')
     .select('*')
-    .order('sort_order', { ascending: true });
+    .order('sort_order', { ascending: true })
+    .order('id', { ascending: true });
 
   if (error) throw error;
   return data || [];
@@ -98,7 +103,8 @@ export const getContactMethods = async (): Promise<ContactMethod[]> => {
   const { data, error } = await publicSupabase
     .from('contact_methods')
     .select('*')
-    .order('sort_order', { ascending: true });
+    .order('sort_order', { ascending: true })
+    .order('id', { ascending: true });
 
   if (error) throw error;
   return data || [];

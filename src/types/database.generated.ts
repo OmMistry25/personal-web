@@ -162,6 +162,7 @@ export type Database = {
           description: string
           featured: boolean
           id: string
+          sort_order: number
           tags: string[]
           title: string
           updated_at: string
@@ -174,6 +175,7 @@ export type Database = {
           description: string
           featured?: boolean
           id?: string
+          sort_order?: number
           tags?: string[]
           title: string
           updated_at?: string
@@ -186,6 +188,7 @@ export type Database = {
           description?: string
           featured?: boolean
           id?: string
+          sort_order?: number
           tags?: string[]
           title?: string
           updated_at?: string
@@ -203,6 +206,7 @@ export type Database = {
           id: string
           period: string
           role: string
+          sort_order: number
           technologies: string[]
           updated_at: string
         }
@@ -214,6 +218,7 @@ export type Database = {
           id?: string
           period: string
           role: string
+          sort_order?: number
           technologies?: string[]
           updated_at?: string
         }
@@ -225,6 +230,7 @@ export type Database = {
           id?: string
           period?: string
           role?: string
+          sort_order?: number
           technologies?: string[]
           updated_at?: string
         }

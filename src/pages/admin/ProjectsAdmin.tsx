@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { Project } from '../../types';
-import { PlusCircle, Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, MoveUp, MoveDown } from 'lucide-react';
 
 const ProjectsAdmin: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -13,7 +13,8 @@ const ProjectsAdmin: React.FC = () => {
     year: '',
     tags: [],
     featured: false,
-    achievements: []
+    achievements: [],
+    sort_order: 0
   });
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -27,7 +28,8 @@ const ProjectsAdmin: React.FC = () => {
       const { data, error } = await supabase
         .from('projects')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('sort_order', { ascending: true })
+        .order('id', { ascending: true });
 
       if (error) throw error;
       setProjects(data || []);
@@ -48,9 +50,10 @@ const ProjectsAdmin: React.FC = () => {
           .eq('id', editingId);
         if (error) throw error;
       } else {
+        const nextSortOrder = Math.min(...projects.map(project => project.sort_order), 1) - 1;
         const { error } = await supabase
           .from('projects')
-          .insert(formData);
+          .insert({ ...formData, sort_order: nextSortOrder });
         if (error) throw error;
       }
       
@@ -61,7 +64,8 @@ const ProjectsAdmin: React.FC = () => {
         year: '',
         tags: [],
         featured: false,
-        achievements: []
+        achievements: [],
+        sort_order: 0
       });
       setIsEditing(false);
       setEditingId(null);
@@ -87,6 +91,33 @@ const ProjectsAdmin: React.FC = () => {
       fetchProjects();
     } catch (error) {
       console.error('Error deleting project:', error);
+    }
+  };
+
+  const moveProject = async (project: Project, direction: 'up' | 'down') => {
+    const currentIndex = projects.findIndex(item => item.id === project.id);
+    const nextIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+
+    if (currentIndex < 0 || nextIndex < 0 || nextIndex >= projects.length) return;
+
+    const adjacentProject = projects[nextIndex];
+
+    try {
+      const { error: projectError } = await supabase
+        .from('projects')
+        .update({ sort_order: adjacentProject.sort_order })
+        .eq('id', project.id!);
+      if (projectError) throw projectError;
+
+      const { error: adjacentError } = await supabase
+        .from('projects')
+        .update({ sort_order: project.sort_order })
+        .eq('id', adjacentProject.id!);
+      if (adjacentError) throw adjacentError;
+
+      fetchProjects();
+    } catch (error) {
+      console.error('Error moving project:', error);
     }
   };
 
@@ -187,7 +218,8 @@ const ProjectsAdmin: React.FC = () => {
                     year: '',
                     tags: [],
                     featured: false,
-                    achievements: []
+                    achievements: [],
+                    sort_order: 0
                   });
                   setIsEditing(false);
                   setEditingId(null);
@@ -216,6 +248,7 @@ const ProjectsAdmin: React.FC = () => {
                 <div>
                   <h3 className="text-lg font-medium">{project.title}</h3>
                   <p className="text-gray-600">{project.description}</p>
+                  <p className="text-gray-500 text-sm mt-2">Order: {project.sort_order}</p>
                   <div className="mt-2 space-x-2">
                     {project.tags?.map((tag) => (
                       <span key={tag} className="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
@@ -225,6 +258,24 @@ const ProjectsAdmin: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => moveProject(project, 'up')}
+                    disabled={projects[0]?.id === project.id}
+                    aria-label={`Move ${project.title} up`}
+                    className="p-2 text-gray-600 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-30"
+                  >
+                    <MoveUp size={20} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => moveProject(project, 'down')}
+                    disabled={projects[projects.length - 1]?.id === project.id}
+                    aria-label={`Move ${project.title} down`}
+                    className="p-2 text-gray-600 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-30"
+                  >
+                    <MoveDown size={20} />
+                  </button>
                   <button
                     onClick={() => handleEdit(project)}
                     className="p-2 text-blue-600 hover:text-blue-800"

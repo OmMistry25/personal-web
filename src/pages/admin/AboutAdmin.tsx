@@ -25,12 +25,12 @@ const AboutAdmin: React.FC = () => {
       const { data, error } = await supabase
         .from('about_video')
         .select('video_id')
-        .limit(1);
+        .maybeSingle();
 
       if (error) throw error;
       
-      if (data && data.length > 0 && data[0].video_id) {
-        setVideoId(data[0].video_id);
+      if (data?.video_id) {
+        setVideoId(data.video_id);
       }
     } catch (error) {
       console.error('Error fetching video:', error);
@@ -43,7 +43,8 @@ const AboutAdmin: React.FC = () => {
       const { data, error } = await supabase
         .from('about_items')
         .select('*')
-        .order('sort_order', { ascending: true });
+        .order('sort_order', { ascending: true })
+        .order('id', { ascending: true });
 
       if (error) throw error;
       setItems(data || []);

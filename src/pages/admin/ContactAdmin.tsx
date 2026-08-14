@@ -24,7 +24,8 @@ const ContactAdmin: React.FC = () => {
       const { data, error } = await supabase
         .from('contact_methods')
         .select('*')
-        .order('sort_order', { ascending: true });
+        .order('sort_order', { ascending: true })
+        .order('id', { ascending: true });
 
       if (error) throw error;
       setMethods(data || []);

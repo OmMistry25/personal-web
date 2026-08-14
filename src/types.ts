@@ -6,6 +6,7 @@ export interface Project {
   url: string;
   featured: boolean;
   year: string;
+  sort_order: number;
   achievements?: string[];
 }
 
@@ -29,6 +30,7 @@ export interface WorkExperience {
   description: string;
   achievements: string[];
   technologies: string[];
+  sort_order: number;
 }
 
 export interface AboutItem {
