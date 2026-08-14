@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test:e2e": "node scripts/check-e2e-env.mjs && playwright test",
+    "test:e2e:smoke": "node scripts/check-e2e-env.mjs && playwright test tests/e2e/smoke",
+    "test:e2e:visual": "node scripts/check-e2e-env.mjs && playwright test tests/e2e/visual",
+    "test:e2e:capture-production": "playwright test --config=playwright.production.config.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.7",
@@ -21,6 +25,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
+    "@playwright/test": "1.61.1",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
