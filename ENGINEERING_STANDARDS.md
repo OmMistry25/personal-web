@@ -96,6 +96,112 @@ Summarize:
 
 Do not claim checks passed unless they were actually executed successfully.
 
+### Branch, Commit, and Pull Request Workflow
+
+Every material implementation step must be completed on its own branch and concluded with a pull request.
+
+#### One Step, One Branch, One Pull Request
+
+For each approved migration step or other materially scoped change:
+
+1. Start from the latest approved base branch.
+2. Create a new branch using the repository branch naming standards.
+3. Implement only the approved scope for that step.
+4. Make cohesive Conventional Commits.
+5. Run all applicable verification required by these standards and the implementation brief.
+6. Review the complete diff before publishing.
+7. Push the branch.
+8. Open a pull request.
+9. Stop after creating the pull request unless the user explicitly instructs the agent to continue.
+
+Do not begin the next migration step in the same branch or pull request.
+
+#### Pull Request Requirements
+
+A material step is not considered complete until its pull request has been created.
+
+Every pull request must include:
+
+- problem and scope
+- non-goals
+- implementation summary
+- files and systems affected
+- verification evidence
+- visual or behavioral impact
+- security and data impact
+- migration impact
+- known limitations
+- rollback instructions
+- follow-up work
+
+Where relevant, include screenshots, test results, or other parity evidence.
+
+#### Approval Boundary
+
+Creating the pull request is part of an already approved implementation step and does not require separate user approval.
+
+Once the user approves an implementation brief, or directly authorizes a sufficiently defined small change under `AGENTS.md`, the agent is authorized to:
+
+- create the step branch
+- make the approved changes
+- create the required commits
+- run approved verification
+- push the step branch
+- create the pull request
+
+Do not ask separately for permission to commit, push, or create the pull request unless the user explicitly restricted one of those actions.
+
+#### Merging
+
+Creating a pull request does not authorize merging it.
+
+The agent must not:
+
+- merge the pull request
+- squash and merge
+- rebase and merge
+- delete the branch after merge
+
+unless the user explicitly authorizes the action.
+
+The pull request is the review checkpoint between migration steps.
+
+#### Next-Step Isolation
+
+Do not begin the next implementation step while the current step is awaiting review unless the user explicitly instructs otherwise.
+
+After creating the pull request:
+
+1. Report the pull request.
+2. Summarize verification results.
+3. Surface any unresolved risks or review items.
+4. Propose exactly one next step when appropriate.
+5. Wait for further instruction.
+
+#### Exceptions
+
+A separate pull request is not required for:
+
+- read-only investigation
+- planning
+- audits that produce no repository changes
+- discussion
+- commands that do not alter tracked repository state
+
+If an audit or documentation step creates or modifies tracked repository files, use the normal branch and pull request workflow.
+
+#### Scope Discipline
+
+Do not bundle opportunistic cleanup into a step's pull request.
+
+If unrelated problems are discovered:
+
+- document them
+- leave them unchanged
+- propose them as separate future work when appropriate
+
+Each pull request should be independently understandable, reviewable, testable, and reversible.
+
 ## 3. Writing
 
 Use concise, direct language.
