@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
-import { NowItem } from '../types';
-import { supabase } from '../lib/supabase';
+import { getNowItems, type NowItem } from '../lib/public-data';
 
 const Now: React.FC = () => {
   const [activities, setActivities] = useState<NowItem[]>([]);
@@ -12,13 +11,8 @@ const Now: React.FC = () => {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const { data, error } = await supabase
-          .from('now_items')
-          .select('*')
-          .order('sort_order', { ascending: true });
-
-        if (error) throw error;
-        setActivities(data || []);
+        const data = await getNowItems();
+        setActivities(data);
       } catch (error) {
         console.error('Error fetching activities:', error);
       } finally {

@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
-import { ContactMethod } from '../types';
-import { supabase } from '../lib/supabase';
+import {
+  getContactMethods,
+  type ContactMethod,
+} from '../lib/public-data';
 
 const Contact: React.FC = () => {
   const [contactMethods, setContactMethods] = useState<ContactMethod[]>([]);
@@ -12,13 +14,8 @@ const Contact: React.FC = () => {
   useEffect(() => {
     const fetchContactMethods = async () => {
       try {
-        const { data, error } = await supabase
-          .from('contact_methods')
-          .select('*')
-          .order('sort_order', { ascending: true });
-
-        if (error) throw error;
-        setContactMethods(data || []);
+        const data = await getContactMethods();
+        setContactMethods(data);
       } catch (error) {
         console.error('Error fetching contact methods:', error);
       } finally {

@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
-import { Note } from '../types';
-import { supabase } from '../lib/supabase';
+import { getNotes, type Note } from '../lib/public-data';
 
 const Writing: React.FC = () => {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -12,13 +11,8 @@ const Writing: React.FC = () => {
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const { data, error } = await supabase
-          .from('notes')
-          .select('*')
-          .order('sort_order', { ascending: true });
-
-        if (error) throw error;
-        setNotes(data || []);
+        const data = await getNotes();
+        setNotes(data);
       } catch (error) {
         console.error('Error fetching notes:', error);
       } finally {
