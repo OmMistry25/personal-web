@@ -37,6 +37,8 @@ Do not modify unfamiliar code based solely on filenames or assumptions.
 
 ### Plan
 
+Follow the implementation-brief and approval workflow defined in `AGENTS.md`. The agent is responsible for drafting a required brief when the user has not supplied one. An approved detailed plan is sufficient authorization for its stated scope and must not be followed by a redundant approval cycle.
+
 For non-trivial changes, determine:
 
 - current behavior

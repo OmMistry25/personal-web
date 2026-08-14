@@ -14,6 +14,8 @@ Do not interpret minimalism as unfinished design.
 
 Do not add complexity merely because the implementation supports it.
 
+Materially scoped work must follow the implementation-brief and approval workflow in `AGENTS.md`. Once a plan or specific step is approved, execute that approved scope without requiring the user to supply or restate another brief. Seek additional approval only for a material scope change.
+
 ## 2. Current Migration Objective
 
 The immediate objective is to make the existing website independently maintainable without Bolt.new while preserving the current public experience.

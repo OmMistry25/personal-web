@@ -42,6 +42,71 @@ For requests to implement, change, refactor, fix, or build:
 
 Do not make unrelated improvements while completing a task.
 
+## Implementation Briefs and Approval
+
+An implementation brief is required before beginning a new migration step, feature, refactor, fix, infrastructure change, or other materially scoped unit of work.
+
+Once the user explicitly approves a proposed implementation plan or instructs the agent to execute a specific step:
+
+- treat that approval as authorization to perform the work described in the approved scope
+- do not ask for a second implementation brief
+- do not ask the user to rewrite or restate the implementation plan
+- do not request confirmation for each microstep
+- execute the approved work systematically through completion
+- stop only when a defined stop condition is reached or the required work would exceed the approved scope
+
+A previously approved detailed plan satisfies the implementation-brief requirement for that step.
+
+### Agent-Authored Implementation Briefs
+
+Unless the user explicitly provides an implementation brief, the agent is responsible for drafting one when a new material change is proposed.
+
+The agent must not require the user to author the brief.
+
+The brief should include:
+
+- objective
+- current-state context
+- scope
+- non-goals
+- planned changes
+- affected files and systems
+- expected behavior impact
+- visual impact
+- data and migration impact
+- security impact
+- verification plan
+- rollback plan
+- stop conditions
+
+After presenting the brief, wait for approval before implementing.
+
+### Direct Execution
+
+If the user explicitly says to proceed, implement, execute, make the changes, or otherwise clearly approves an already-defined scope, begin implementation without generating another approval cycle.
+
+### Scope Changes During Implementation
+
+Additional approval is required only when implementation discovers a material change to the approved scope, including:
+
+- modifying a system explicitly marked frozen
+- changing public behavior not included in the approved plan
+- modifying production data or infrastructure
+- adding an unapproved dependency
+- changing authentication or authorization
+- changing database schema outside the approved migration
+- changing deployment behavior
+- expanding the work into a separate feature or refactor
+- introducing a materially different technical approach
+
+Minor implementation details that are necessary to complete the approved work do not require additional approval.
+
+### Small Changes
+
+For low-risk, localized changes with no meaningful architecture, data, security, infrastructure, dependency, or public-behavior impact, the agent may provide a concise plan rather than a full implementation brief.
+
+The agent should use judgment and avoid unnecessary approval overhead.
+
 ## Primary Constraint
 
 Until the user explicitly authorizes design changes, the existing public website is the visual and behavioral source of truth.
