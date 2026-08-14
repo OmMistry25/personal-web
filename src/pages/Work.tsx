@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
-import { WorkExperience } from '../types';
-import { supabase } from '../lib/supabase';
+import { getWorkExperience, type WorkExperience } from '../lib/public-data';
 
 const Work: React.FC = () => {
   const [experiences, setExperiences] = useState<WorkExperience[]>([]);
@@ -12,13 +11,8 @@ const Work: React.FC = () => {
   useEffect(() => {
     const fetchExperiences = async () => {
       try {
-        const { data, error } = await supabase
-          .from('work_experience')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        setExperiences(data || []);
+        const data = await getWorkExperience();
+        setExperiences(data);
       } catch (error) {
         console.error('Error fetching work experience:', error);
       } finally {

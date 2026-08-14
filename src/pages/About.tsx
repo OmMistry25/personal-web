@@ -2,8 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
-import { AboutItem } from '../types';
-import { supabase } from '../lib/supabase';
+import {
+  getAboutItems,
+  getAboutVideo,
+  type AboutItem,
+} from '../lib/public-data';
 
 const About: React.FC = () => {
   const [items, setItems] = useState<AboutItem[]>([]);
@@ -14,21 +17,11 @@ const About: React.FC = () => {
     const fetchData = async () => {
       try {
         // Fetch about items
-        const { data: itemsData, error: itemsError } = await supabase
-          .from('about_items')
-          .select('*')
-          .order('sort_order', { ascending: true });
-
-        if (itemsError) throw itemsError;
-        setItems(itemsData || []);
+        const itemsData = await getAboutItems();
+        setItems(itemsData);
 
         // Fetch video ID
-        const { data: videoData, error: videoError } = await supabase
-          .from('about_video')
-          .select('video_id')
-          .limit(1);
-
-        if (videoError) throw videoError;
+        const videoData = await getAboutVideo();
         if (videoData && videoData.length > 0 && videoData[0].video_id) {
           setVideoId(videoData[0].video_id);
         }

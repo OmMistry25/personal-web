@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
-import { Note as NoteType } from '../types';
-import { supabase } from '../lib/supabase';
+import { getNoteBySlug, type Note as NoteType } from '../lib/public-data';
 
 const Note: React.FC = () => {
   const { slug } = useParams();
@@ -13,13 +12,7 @@ const Note: React.FC = () => {
   useEffect(() => {
     const fetchNote = async () => {
       try {
-        const { data, error } = await supabase
-          .from('notes')
-          .select('*')
-          .eq('slug', slug)
-          .single();
-
-        if (error) throw error;
+        const data = await getNoteBySlug(slug!);
         setNote(data);
       } catch (error) {
         console.error('Error fetching note:', error);

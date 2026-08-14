@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
-import { Project } from '../types';
-import { supabase } from '../lib/supabase';
+import { getProjects, type Project } from '../lib/public-data';
 
 const Projects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -12,13 +11,8 @@ const Projects: React.FC = () => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const { data, error } = await supabase
-          .from('projects')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        setProjects(data || []);
+        const data = await getProjects();
+        setProjects(data);
       } catch (error) {
         console.error('Error fetching projects:', error);
       } finally {
