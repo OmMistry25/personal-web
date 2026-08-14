@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
+import PublicDataError from '../components/PublicDataError';
 import { getProjects, type Project } from '../lib/public-data';
 
 const Projects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -15,6 +17,7 @@ const Projects: React.FC = () => {
         setProjects(data);
       } catch (error) {
         console.error('Error fetching projects:', error);
+        setHasError(true);
       } finally {
         setLoading(false);
       }
@@ -25,6 +28,10 @@ const Projects: React.FC = () => {
 
   if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (hasError) {
+    return <PublicDataError backTo="/" />;
   }
 
   return (

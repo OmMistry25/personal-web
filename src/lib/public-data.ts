@@ -32,12 +32,12 @@ export const getNotes = async (): Promise<Note[]> => {
   return data || [];
 };
 
-export const getNoteBySlug = async (slug: string): Promise<Note> => {
+export const getNoteBySlug = async (slug: string): Promise<Note | null> => {
   const { data, error } = await publicSupabase
     .from('notes')
     .select('*')
     .eq('slug', slug)
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
   return data;
@@ -53,12 +53,12 @@ export const getWorkExperience = async (): Promise<WorkExperience[]> => {
   return data || [];
 };
 
-export const getWorkExperienceById = async (id: string): Promise<WorkExperience> => {
+export const getWorkExperienceById = async (id: string): Promise<WorkExperience | null> => {
   const { data, error } = await publicSupabase
     .from('work_experience')
     .select('*')
     .eq('id', id)
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
   return data;
