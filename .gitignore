@@ -19,6 +19,7 @@ test-results/
 .playwright/
 .cache/ms-playwright/
 tests/e2e/.temporary/
+supabase/.temp/
 
 # Editor directories and files
 .vscode/*

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 import { WorkExperience } from '../../types';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Pencil, Trash2, MoveUp, MoveDown } from 'lucide-react';
 
 const WorkAdmin: React.FC = () => {
   const [experiences, setExperiences] = useState<WorkExperience[]>([]);
@@ -12,7 +12,8 @@ const WorkAdmin: React.FC = () => {
     period: '',
     description: '',
     achievements: [],
-    technologies: []
+    technologies: [],
+    sort_order: 0
   });
   const [isEditing, setIsEditing] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -26,7 +27,8 @@ const WorkAdmin: React.FC = () => {
       const { data, error } = await supabase
         .from('work_experience')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('sort_order', { ascending: true })
+        .order('id', { ascending: true });
 
       if (error) throw error;
       setExperiences(data || []);
@@ -47,9 +49,10 @@ const WorkAdmin: React.FC = () => {
           .eq('id', editingId);
         if (error) throw error;
       } else {
+        const nextSortOrder = Math.min(...experiences.map(experience => experience.sort_order), 1) - 1;
         const { error } = await supabase
           .from('work_experience')
-          .insert(formData);
+          .insert({ ...formData, sort_order: nextSortOrder });
         if (error) throw error;
       }
       
@@ -59,7 +62,8 @@ const WorkAdmin: React.FC = () => {
         period: '',
         description: '',
         achievements: [],
-        technologies: []
+        technologies: [],
+        sort_order: 0
       });
       setIsEditing(false);
       setEditingId(null);
@@ -85,6 +89,33 @@ const WorkAdmin: React.FC = () => {
       fetchExperiences();
     } catch (error) {
       console.error('Error deleting work experience:', error);
+    }
+  };
+
+  const moveExperience = async (experience: WorkExperience, direction: 'up' | 'down') => {
+    const currentIndex = experiences.findIndex(item => item.id === experience.id);
+    const nextIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+
+    if (currentIndex < 0 || nextIndex < 0 || nextIndex >= experiences.length) return;
+
+    const adjacentExperience = experiences[nextIndex];
+
+    try {
+      const { error: experienceError } = await supabase
+        .from('work_experience')
+        .update({ sort_order: adjacentExperience.sort_order })
+        .eq('id', experience.id!);
+      if (experienceError) throw experienceError;
+
+      const { error: adjacentError } = await supabase
+        .from('work_experience')
+        .update({ sort_order: experience.sort_order })
+        .eq('id', adjacentExperience.id!);
+      if (adjacentError) throw adjacentError;
+
+      fetchExperiences();
+    } catch (error) {
+      console.error('Error moving work experience:', error);
     }
   };
 
@@ -174,7 +205,8 @@ const WorkAdmin: React.FC = () => {
                     period: '',
                     description: '',
                     achievements: [],
-                    technologies: []
+                    technologies: [],
+                    sort_order: 0
                   });
                   setIsEditing(false);
                   setEditingId(null);
@@ -204,6 +236,7 @@ const WorkAdmin: React.FC = () => {
                   <h3 className="text-lg font-medium">{experience.role} at {experience.company}</h3>
                   <p className="text-gray-600">{experience.period}</p>
                   <p className="text-gray-600 mt-2">{experience.description}</p>
+                  <p className="text-gray-500 text-sm mt-2">Order: {experience.sort_order}</p>
                   <div className="mt-2 space-x-2">
                     {experience.technologies?.map((tech) => (
                       <span key={tech} className="inline-block bg-gray-100 rounded-full px-3 py-1 text-sm font-semibold text-gray-700">
@@ -213,6 +246,24 @@ const WorkAdmin: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => moveExperience(experience, 'up')}
+                    disabled={experiences[0]?.id === experience.id}
+                    aria-label={`Move ${experience.role} at ${experience.company} up`}
+                    className="p-2 text-gray-600 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-30"
+                  >
+                    <MoveUp size={20} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => moveExperience(experience, 'down')}
+                    disabled={experiences[experiences.length - 1]?.id === experience.id}
+                    aria-label={`Move ${experience.role} at ${experience.company} down`}
+                    className="p-2 text-gray-600 hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-30"
+                  >
+                    <MoveDown size={20} />
+                  </button>
                   <button
                     onClick={() => handleEdit(experience)}
                     className="p-2 text-blue-600 hover:text-blue-800"
