@@ -2,7 +2,9 @@
 
 ## Status
 
-Repository configuration prepared on August 14, 2026. The Vercel project has not yet been created or published.
+Completed and verified on August 14, 2026.
+
+The production deployment is available at <https://personal-web-eta-eight.vercel.app/>. It was built from GitHub `main` commit `3958bc3aafdd22e553518e94a6c0b98479c10381` and reached Vercel's `READY` state.
 
 This migration replaces the disconnected Bolt-to-Netlify publishing path with Git-based Vercel deployments. It does not remove, disable, or modify the existing Netlify project.
 
@@ -10,7 +12,9 @@ This migration replaces the disconnected Bolt-to-Netlify publishing path with Gi
 
 The existing `ommistry.netlify.app` project is not connected to GitHub. Netlify identifies its source as Bolt, reports no linked repository or production branch, and still serves a production deploy published on June 22, 2025.
 
-The current GitHub `main` branch therefore does not deploy to that site. Netlify remains available as a rollback reference while Vercel is configured and verified.
+The current GitHub `main` branch does not deploy to Netlify. Netlify remains available as a rollback and historical comparison reference.
+
+The Vercel project `personal-web` is connected to `OmMistry25/personal-web`, uses `main` as its production branch, and creates production deployments from merged commits.
 
 ## Repository Configuration
 
@@ -27,7 +31,7 @@ The existing `netlify.toml` remains unchanged for historical reference and rollb
 
 ## Required Vercel Project Settings
 
-The Vercel project must use:
+The Vercel project was verified with:
 
 | Setting | Required value |
 | --- | --- |
@@ -39,53 +43,59 @@ The Vercel project must use:
 | Output directory | `dist` |
 | Node.js version | `22.x` |
 
-Node 22 is required because Vercel no longer supports Node 18 for new deployments. The repository builds successfully under the local Node 22 runtime.
+The repository and production deployment build successfully with Node 22.
 
 ## Environment Preconditions
 
-The following variable names must be configured directly in Vercel for both Preview and Production before deployment:
+The following variable names are configured as encrypted values in both Preview and Production:
 
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_ANON_KEY`
 
-Their values must not be written to Git, copied into documentation, displayed in review output, or transferred through chat. Deployment stops if either name is absent.
+Their values were not read during deployment verification. They must not be written to Git, copied into documentation, displayed in review output, or transferred through chat. Deployment must stop if either name is absent from a future project or environment.
 
 ## Expected Behavior
 
-Vercel will create preview deployments for non-production branches and production deployments from `main`. The generated Vercel URL will be separate from `ommistry.netlify.app`; the Netlify subdomain cannot be transferred to Vercel.
+Vercel creates preview deployments for non-production branches and production deployments from `main`. The generated Vercel URL is separate from `ommistry.netlify.app`.
 
 The deployed application should reproduce the existing public appearance and content order while including all code merged through Migration Step 6. No visual, content, route, Supabase, or authentication behavior change is intended.
 
 ## Deployment Verification
 
-Before accepting the Vercel deployment:
+The accepted production deployment passed the following checks:
 
-1. Confirm the build uses Node 22, Vite, `npm run build`, and `dist`.
-2. Confirm both required variable names exist in Preview and Production without reading their values.
-3. Verify the root page and every public collection route.
-4. Verify direct deep links for Writing and Work detail routes.
-5. Verify Projects, Writing, Work, About, Now, and Contact preserve their production order and content.
-6. Verify the About video singleton renders successfully.
-7. Verify `/admin` redirects to the existing login page without testing credentials.
-8. Verify the deployed bundle contains the deterministic Step 6 ordering queries.
-9. Verify the browser console and network contain no application failures.
-10. Verify the configured security headers on the generated Vercel URL.
+| Check | Result |
+| --- | --- |
+| Git source | `OmMistry25/personal-web`, branch `main`, commit `3958bc3aafdd22e553518e94a6c0b98479c10381` |
+| Build settings | Node 22, Vite, `npm run build`, `dist` |
+| Required environment names | Present and encrypted for Preview and Production; values not read |
+| Public routes | Root and all public collection routes rendered successfully |
+| Direct SPA navigation | Representative Writing and Work detail URLs returned HTML and rendered their records |
+| Public parity | Projects, Writing, Work, About, Now, and Contact matched Netlify content and order |
+| About video | Existing singleton rendered successfully |
+| Admin boundary | `/admin` redirected to `/admin/login`; credentials were not tested |
+| Step 6 behavior | Deployment source commit contains the deterministic queries and live ordering matched the baseline |
+| Browser health | No browser console warnings or errors were observed during route verification |
+| Security headers | `X-Frame-Options`, `X-XSS-Protection`, `X-Content-Type-Options`, and `Referrer-Policy` matched the configured values |
+| Visual parity | Homepage matched Netlify at a normalized 1280-pixel desktop viewport |
+
+The legacy immutable-cache rule targets `/static/*`, while Vite emits fingerprinted files under `/assets/*`. Both the accepted Vercel deployment and the Netlify baseline serve those `/assets/*` files with revalidation, so this is not a migration regression. Changing the cache policy is separate performance work.
 
 ## Security and Data Impact
 
-This migration grants Vercel access to build the GitHub repository and requires the two existing public-client Supabase variables. It does not change Supabase Auth, users, RLS, grants, storage, Edge Functions, schema, or data.
+This migration grants Vercel access to build the GitHub repository and uses the two existing public-client Supabase variables. It does not change Supabase Auth, users, RLS, grants, storage, Edge Functions, schema, or data.
 
 The repository contains no Vercel token, Supabase value, project credential, or generated environment file.
 
 ## Rollback
 
-The existing Netlify deployment remains enabled and unchanged. If the Vercel build or verification fails, do not present the Vercel URL as the replacement production site.
+The existing Netlify deployment remains enabled and unchanged. If a future Vercel production build or parity verification fails, keep the last verified Vercel deployment or Netlify reference available while the failure is investigated.
 
-After a successful Vercel deployment, Vercel deployment history can restore a prior immutable deployment. Deleting or disabling the Netlify project requires separate approval and is not part of this migration.
+Vercel deployment history can restore a prior immutable deployment. Deleting or disabling the Netlify project requires separate approval and is not part of this migration.
 
 ## Stop Conditions
 
-Stop before deployment if:
+Stop a future deployment or infrastructure change if:
 
 - either required environment-variable name is absent
 - GitHub authorization requires unexpected repository access
