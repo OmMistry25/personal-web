@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
+import PublicDataError from '../components/PublicDataError';
 import {
   getContactMethods,
   type ContactMethod,
@@ -10,6 +11,7 @@ import {
 const Contact: React.FC = () => {
   const [contactMethods, setContactMethods] = useState<ContactMethod[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     const fetchContactMethods = async () => {
@@ -18,6 +20,7 @@ const Contact: React.FC = () => {
         setContactMethods(data);
       } catch (error) {
         console.error('Error fetching contact methods:', error);
+        setHasError(true);
       } finally {
         setLoading(false);
       }
@@ -32,6 +35,10 @@ const Contact: React.FC = () => {
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-800"></div>
       </div>
     );
+  }
+
+  if (hasError) {
+    return <PublicDataError backTo="/" />;
   }
 
   return (

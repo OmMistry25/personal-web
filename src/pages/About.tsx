@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
+import PublicDataError from '../components/PublicDataError';
 import {
   getAboutItems,
   getAboutVideo,
@@ -12,6 +13,7 @@ const About: React.FC = () => {
   const [items, setItems] = useState<AboutItem[]>([]);
   const [videoId, setVideoId] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,13 +22,18 @@ const About: React.FC = () => {
         const itemsData = await getAboutItems();
         setItems(itemsData);
 
-        // Fetch video ID
-        const videoData = await getAboutVideo();
-        if (videoData && videoData.length > 0 && videoData[0].video_id) {
-          setVideoId(videoData[0].video_id);
+        try {
+          // Fetch video ID
+          const videoData = await getAboutVideo();
+          if (videoData && videoData.length > 0 && videoData[0].video_id) {
+            setVideoId(videoData[0].video_id);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
+        setHasError(true);
       } finally {
         setLoading(false);
       }
@@ -39,6 +46,10 @@ const About: React.FC = () => {
     return <div className="min-h-screen flex items-center justify-center">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-800"></div>
     </div>;
+  }
+
+  if (hasError) {
+    return <PublicDataError backTo="/" />;
   }
 
   return (

@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test:e2e": "node scripts/check-e2e-env.mjs && playwright test",
+    "test:e2e:failure": "node scripts/check-e2e-env.mjs && playwright test tests/e2e/failure",
     "test:e2e:smoke": "node scripts/check-e2e-env.mjs && playwright test tests/e2e/smoke",
     "test:e2e:visual": "node scripts/check-e2e-env.mjs && playwright test tests/e2e/visual",
     "test:e2e:capture-production": "playwright test --config=playwright.production.config.ts"
