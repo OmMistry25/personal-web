@@ -1,38 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../contexts/AuthContext';
+import { isAdministrator } from '../../lib/auth';
+
+interface LoginLocationState {
+  from?: string;
+}
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('admin@example.com');
-  const [password, setPassword] = useState('admin123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [setupComplete, setSetupComplete] = useState(false);
+  const { user, isAdmin, signIn, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const setupAdmin = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/setup-admin`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-        },
-      });
-
-      if (!response.ok) throw new Error('Failed to setup admin');
-      
-      const data = await response.json();
-      setSetupComplete(true);
-      return data;
-    } catch (err) {
-      console.error('Setup error:', err);
-      setError('Failed to setup admin account');
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (user && isAdmin) {
+      const state = location.state as LoginLocationState | null;
+      navigate(state?.from || '/admin/dashboard', { replace: true });
+      return;
     }
-  };
+
+    if (user && !isAdmin) {
+      void signOut().catch(() => {
+        setError('Unable to authorize this account.');
+      });
+    }
+  }, [isAdmin, location.state, navigate, signOut, user]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,17 +36,18 @@ const Login: React.FC = () => {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+      const authenticatedUser = await signIn(email, password);
 
-      if (error) throw error;
+      if (!isAdministrator(authenticatedUser)) {
+        await signOut();
+        setError('Unable to sign in with those credentials.');
+        return;
+      }
 
-      const from = (location.state as any)?.from?.pathname || '/admin/dashboard';
-      navigate(from, { replace: true });
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      const state = location.state as LoginLocationState | null;
+      navigate(state?.from || '/admin/dashboard', { replace: true });
+    } catch {
+      setError('Unable to sign in with those credentials.');
     } finally {
       setLoading(false);
     }
@@ -65,18 +62,6 @@ const Login: React.FC = () => {
           </h2>
         </div>
         
-        {!setupComplete && (
-          <div className="flex justify-center">
-            <button
-              onClick={setupAdmin}
-              disabled={loading}
-              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-neutral-600 hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-500 disabled:opacity-50"
-            >
-              {loading ? 'Setting up...' : 'Setup Admin Account'}
-            </button>
-          </div>
-        )}
-
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
           {error && (
             <div className="text-red-500 text-sm text-center">
@@ -87,6 +72,8 @@ const Login: React.FC = () => {
             <div>
               <input
                 type="email"
+                autoComplete="username"
+                aria-label="Email address"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -97,6 +84,8 @@ const Login: React.FC = () => {
             <div>
               <input
                 type="password"
+                autoComplete="current-password"
+                aria-label="Password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

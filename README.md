@@ -84,5 +84,7 @@ The Vercel project uses Node 22, the Vite framework preset, `npm run build`, and
 - [Operating rules](RULES.md)
 - [Engineering standards](ENGINEERING_STANDARDS.md)
 - [Migration audit](docs/migration/initial-audit.md)
+- [Administrator security audit](docs/migration/admin-security-audit.md)
+- [Administrator authorization hardening](docs/migration/administrator-authorization.md)
 - [Production reference](docs/migration/production-reference.md)
 - [Vercel deployment record](docs/migration/vercel-deployment.md)
