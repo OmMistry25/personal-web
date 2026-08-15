@@ -77,9 +77,9 @@ const AboutAdmin: React.FC = () => {
       if (insertError) throw insertError;
 
       setErrorMessage('');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving video:', error);
-      setErrorMessage(error.message || 'Error saving video');
+      setErrorMessage(error instanceof Error && error.message ? error.message : 'Error saving video');
     }
   };
 
@@ -107,7 +107,7 @@ const AboutAdmin: React.FC = () => {
       setIsEditing(false);
       setEditingId(null);
       fetchItems();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving about item:', error);
       setErrorMessage('Error saving about item');
     }
