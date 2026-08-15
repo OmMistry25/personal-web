@@ -84,9 +84,9 @@ The following checks completed successfully:
 - The deployed Edge Function source matches the inert repository source.
 - An authorized function request returned `410 Gone`.
 
-## Unchanged and unverified configuration
+## Configuration follow-up
 
-This step did not change:
+This authorization step did not change:
 
 - external email-signup configuration
 - anonymous-signin configuration
@@ -95,7 +95,7 @@ This step did not change:
 - database runtime version
 - Vercel or Netlify settings
 
-Current security advisors still report the separately scoped OTP-expiration, leaked-password-protection, and Postgres-version warnings documented in `admin-security-audit.md`.
+Those controls were subsequently inspected in the separately approved Auth configuration step. Public signup is now disabled, anonymous sign-ins remain disabled, and email OTP expiration is now one hour. Leaked-password protection remains disabled because it requires the Supabase Pro plan. See `auth-configuration-hardening.md` for the production record and current advisor state.
 
 The administrator must refresh the browser session after the metadata change. Signing out and signing back in obtains a JWT containing the new protected claim.
 
