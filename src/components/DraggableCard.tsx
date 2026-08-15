@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import { motion, useSpring, useTransform } from 'framer-motion';
 
 interface DraggableCardProps {
   children: React.ReactNode;

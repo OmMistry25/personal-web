@@ -112,9 +112,9 @@ const WritingAdmin: React.FC = () => {
       setEditingId(null);
       setError(null);
       fetchNotes();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving note:', error);
-      setError(error.message || 'An error occurred while saving the note.');
+      setError(error instanceof Error && error.message ? error.message : 'An error occurred while saving the note.');
     }
   };
 
