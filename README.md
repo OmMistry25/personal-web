@@ -88,5 +88,6 @@ The Vercel project uses Node 22, the Vite framework preset, `npm run build`, and
 - [Administrator authorization hardening](docs/migration/administrator-authorization.md)
 - [Supabase Auth configuration hardening](docs/migration/auth-configuration-hardening.md)
 - [Lint baseline cleanup](docs/migration/lint-baseline-cleanup.md)
+- [Confirmed dead-code removal](docs/migration/confirmed-dead-code-removal.md)
 - [Production reference](docs/migration/production-reference.md)
 - [Vercel deployment record](docs/migration/vercel-deployment.md)
