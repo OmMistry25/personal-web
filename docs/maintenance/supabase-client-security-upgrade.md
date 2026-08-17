@@ -2,8 +2,7 @@
 
 ## Status
 
-Implementation and local verification completed on August 17, 2026. Vercel
-preview verification is the final publication gate for this maintenance step.
+Completed and verified on August 17, 2026.
 
 This maintenance step upgrades the browser Supabase client from 2.49.4 to
 2.50.0. It removes the identified `@supabase/auth-js`, `@supabase/supabase-js`,
@@ -97,14 +96,34 @@ before gzip and 31.20 kB after gzip in this build.
 
 ## Vercel preview verification
 
-Pending publication of the branch. The preview must be `Ready` and pass the
-approved read-only public-data, route-protection, login-page, content-order, and
-desktop-parity checks before this step is handed off for review.
+Vercel built commit `994962ad0a175f468551755f44725e4efd6ba7fc` from branch
+`codex/upgrade-supabase-client-security` and reported the preview as `Ready`.
+
+Read-only browser verification established:
+
+- the homepage rendered the accepted copy and navigation
+- Projects rendered all eight records in the accepted order
+- Writing rendered all ten records in the accepted order
+- a representative Writing detail route rendered directly
+- Work rendered all eight records in the accepted order
+- a representative Work detail route rendered directly
+- About rendered its existing YouTube iframe and copy
+- Now rendered all four records in the accepted order
+- Contact rendered its existing email link
+- `/admin` redirected to `/admin/login` in the unauthenticated preview session
+- the login page rendered without testing credentials
+- no browser console error was observed during the checked routes
+- at a fixed 1280 by 800 viewport, the homepage content and layout matched the
+  current Vercel production deployment; the preview-only Vercel toolbar overlay
+  was excluded from the application comparison
 
 Authenticated preview verification may require the repository owner to sign in
 manually because credentials and browser session tokens are intentionally not
 read, requested, transferred between domains, or stored by this maintenance
 step. No admin content write is required or authorized.
+
+No credential test, authenticated mutation, Supabase operation, deployment
+promotion, or production configuration change was performed.
 
 ## Behavior and visual impact
 
