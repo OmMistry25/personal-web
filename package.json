@@ -15,7 +15,7 @@
     "test:e2e:capture-production": "playwright test --config=playwright.production.config.ts"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.39.7",
+    "@supabase/supabase-js": "2.50.0",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
