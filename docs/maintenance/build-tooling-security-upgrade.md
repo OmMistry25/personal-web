@@ -2,8 +2,8 @@
 
 ## Status
 
-Implementation and local verification completed on August 17, 2026. Vercel
-preview verification is the final publication gate for this maintenance step.
+Implementation, local verification, and Vercel preview verification completed
+on August 17, 2026.
 
 This maintenance step upgrades the smallest compatible build and lint
 dependency set that removes all npm audit findings. Application source,
@@ -138,9 +138,35 @@ outside this step.
 
 ## Vercel preview verification
 
-Pending branch publication. The preview must be `Ready` and pass the approved
-public-data, routing, administrator-boundary, console, and responsive parity
-checks before handoff.
+Vercel deployment `EPaipjnaxKjgmeBr94aKbgJgM78s` for implementation commit
+`38a85d8` reached `Ready` at:
+
+- `https://personal-web-git-codex-upgrade-buil-0b9c74-ommistry25s-projects.vercel.app`
+
+The preview passed the approved publication gate:
+
+- the home page and all six public sections loaded with the production content,
+  links, and deterministic ordering
+- Projects presented all eight production entries in the same order
+- Writing presented all ten production entries in the same order
+- Work presented all eight production entries in the same order
+- representative Writing and Work detail routes matched production
+- the About heading and single YouTube embed URL matched production; an initial
+  accessible-tree difference was limited to timing inside the third-party
+  YouTube player
+- Contact retained the production email link
+- a direct unknown-route request returned the application shell on both hosts,
+  confirming the SPA fallback
+- `/admin` redirected to `/admin/login`; no authenticated route, credentials,
+  mutation, or setup control was exercised
+- no browser console error was recorded; the deliberate unknown-route check
+  produced the expected React Router no-match warning
+- home and representative Writing-detail geometry, document dimensions, and
+  typography matched production exactly at `390x844`, `768x1024`, and
+  `1280x800`
+
+The Vercel toolbar appeared only on the preview and was excluded from the
+application comparison.
 
 ## Behavior and visual impact
 
