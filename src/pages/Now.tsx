@@ -2,25 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
-import { NowItem } from '../types';
-import { supabase } from '../lib/supabase';
+import PublicDataError from '../components/PublicDataError';
+import { getNowItems, type NowItem } from '../lib/public-data';
 
 const Now: React.FC = () => {
   const [activities, setActivities] = useState<NowItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        const { data, error } = await supabase
-          .from('now_items')
-          .select('*')
-          .order('sort_order', { ascending: true });
-
-        if (error) throw error;
-        setActivities(data || []);
+        const data = await getNowItems();
+        setActivities(data);
       } catch (error) {
         console.error('Error fetching activities:', error);
+        setHasError(true);
       } finally {
         setLoading(false);
       }
@@ -35,6 +32,10 @@ const Now: React.FC = () => {
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-800"></div>
       </div>
     );
+  }
+
+  if (hasError) {
+    return <PublicDataError backTo="/" />;
   }
 
   return (

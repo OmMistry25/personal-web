@@ -2,25 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
-import { ContactMethod } from '../types';
-import { supabase } from '../lib/supabase';
+import PublicDataError from '../components/PublicDataError';
+import {
+  getContactMethods,
+  type ContactMethod,
+} from '../lib/public-data';
 
 const Contact: React.FC = () => {
   const [contactMethods, setContactMethods] = useState<ContactMethod[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     const fetchContactMethods = async () => {
       try {
-        const { data, error } = await supabase
-          .from('contact_methods')
-          .select('*')
-          .order('sort_order', { ascending: true });
-
-        if (error) throw error;
-        setContactMethods(data || []);
+        const data = await getContactMethods();
+        setContactMethods(data);
       } catch (error) {
         console.error('Error fetching contact methods:', error);
+        setHasError(true);
       } finally {
         setLoading(false);
       }
@@ -35,6 +35,10 @@ const Contact: React.FC = () => {
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-800"></div>
       </div>
     );
+  }
+
+  if (hasError) {
+    return <PublicDataError backTo="/" />;
   }
 
   return (

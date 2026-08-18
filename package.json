@@ -9,17 +9,17 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test:e2e": "node scripts/check-e2e-env.mjs && playwright test",
+    "test:e2e:failure": "node scripts/check-e2e-env.mjs && playwright test tests/e2e/failure",
     "test:e2e:smoke": "node scripts/check-e2e-env.mjs && playwright test tests/e2e/smoke",
     "test:e2e:visual": "node scripts/check-e2e-env.mjs && playwright test tests/e2e/visual",
     "test:e2e:capture-production": "playwright test --config=playwright.production.config.ts"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.39.7",
-    "@use-gesture/react": "^10.3.0",
+    "@supabase/supabase-js": "2.50.0",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.22.3",
+    "react-router-dom": "^7.18.2",
     "framer-motion": "^11.1.5",
     "@tailwindcss/typography": "^0.5.10"
   },
@@ -38,6 +38,6 @@
     "tailwindcss": "^3.4.1",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.3.0",
-    "vite": "^5.4.2"
+    "vite": "6.4.3"
   }
 }

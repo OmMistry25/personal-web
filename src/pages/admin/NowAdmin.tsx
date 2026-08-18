@@ -22,7 +22,8 @@ const NowAdmin: React.FC = () => {
       const { data, error } = await supabase
         .from('now_items')
         .select('*')
-        .order('sort_order', { ascending: true });
+        .order('sort_order', { ascending: true })
+        .order('id', { ascending: true });
 
       if (error) throw error;
       setItems(data || []);
