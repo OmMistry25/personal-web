@@ -25,12 +25,12 @@ const AboutAdmin: React.FC = () => {
       const { data, error } = await supabase
         .from('about_video')
         .select('video_id')
-        .limit(1);
+        .maybeSingle();
 
       if (error) throw error;
       
-      if (data && data.length > 0 && data[0].video_id) {
-        setVideoId(data[0].video_id);
+      if (data?.video_id) {
+        setVideoId(data.video_id);
       }
     } catch (error) {
       console.error('Error fetching video:', error);
@@ -43,7 +43,8 @@ const AboutAdmin: React.FC = () => {
       const { data, error } = await supabase
         .from('about_items')
         .select('*')
-        .order('sort_order', { ascending: true });
+        .order('sort_order', { ascending: true })
+        .order('id', { ascending: true });
 
       if (error) throw error;
       setItems(data || []);
@@ -76,9 +77,9 @@ const AboutAdmin: React.FC = () => {
       if (insertError) throw insertError;
 
       setErrorMessage('');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving video:', error);
-      setErrorMessage(error.message || 'Error saving video');
+      setErrorMessage(error instanceof Error && error.message ? error.message : 'Error saving video');
     }
   };
 
@@ -106,7 +107,7 @@ const AboutAdmin: React.FC = () => {
       setIsEditing(false);
       setEditingId(null);
       fetchItems();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving about item:', error);
       setErrorMessage('Error saving about item');
     }

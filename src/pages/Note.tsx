@@ -2,27 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
-import { Note as NoteType } from '../types';
-import { supabase } from '../lib/supabase';
+import PublicDataError from '../components/PublicDataError';
+import { getNoteBySlug, type Note as NoteType } from '../lib/public-data';
 
 const Note: React.FC = () => {
   const { slug } = useParams();
   const [note, setNote] = useState<NoteType | null>(null);
   const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     const fetchNote = async () => {
       try {
-        const { data, error } = await supabase
-          .from('notes')
-          .select('*')
-          .eq('slug', slug)
-          .single();
-
-        if (error) throw error;
+        const data = await getNoteBySlug(slug!);
         setNote(data);
       } catch (error) {
         console.error('Error fetching note:', error);
+        setHasError(true);
       } finally {
         setLoading(false);
       }
@@ -37,6 +33,10 @@ const Note: React.FC = () => {
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-800"></div>
       </div>
     );
+  }
+
+  if (hasError) {
+    return <PublicDataError backTo="/writing" />;
   }
 
   if (!note) {

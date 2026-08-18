@@ -5,7 +5,7 @@ import {
   Mail, LogOut, Menu, X 
 } from 'lucide-react';
 import { useState } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../contexts/auth-context';
 import ProjectsAdmin from './ProjectsAdmin';
 import WritingAdmin from './WritingAdmin';
 import WorkAdmin from './WorkAdmin';

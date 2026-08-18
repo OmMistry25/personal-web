@@ -350,6 +350,8 @@ When a safer reversible alternative exists, prefer it.
 
 Local implementation authorization does not automatically authorize external state changes.
 
+The branch and pull request workflow in `ENGINEERING_STANDARDS.md` is the narrow exception. Approval of a defined implementation step authorizes creating its branch, commits, remote branch, and pull request. It does not authorize merging, deployment, production configuration changes, or any other external action.
+
 Do not independently:
 
 - deploy to production
@@ -375,5 +377,6 @@ A change is complete only when:
 - no secrets were introduced
 - the final diff contains no unrelated changes
 - documentation reflects material architectural changes
+- a pull request has been created for any material change to tracked repository files
 
 If something could not be verified, state that explicitly.

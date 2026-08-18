@@ -2,38 +2,38 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import PageTransition from '../components/PageTransition';
-import { AboutItem } from '../types';
-import { supabase } from '../lib/supabase';
+import PublicDataError from '../components/PublicDataError';
+import {
+  getAboutItems,
+  getAboutVideo,
+  type AboutItem,
+} from '../lib/public-data';
 
 const About: React.FC = () => {
   const [items, setItems] = useState<AboutItem[]>([]);
   const [videoId, setVideoId] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Fetch about items
-        const { data: itemsData, error: itemsError } = await supabase
-          .from('about_items')
-          .select('*')
-          .order('sort_order', { ascending: true });
+        const itemsData = await getAboutItems();
+        setItems(itemsData);
 
-        if (itemsError) throw itemsError;
-        setItems(itemsData || []);
-
-        // Fetch video ID
-        const { data: videoData, error: videoError } = await supabase
-          .from('about_video')
-          .select('video_id')
-          .limit(1);
-
-        if (videoError) throw videoError;
-        if (videoData && videoData.length > 0 && videoData[0].video_id) {
-          setVideoId(videoData[0].video_id);
+        try {
+          // Fetch video ID
+          const videoData = await getAboutVideo();
+          if (videoData?.video_id) {
+            setVideoId(videoData.video_id);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
+        setHasError(true);
       } finally {
         setLoading(false);
       }
@@ -46,6 +46,10 @@ const About: React.FC = () => {
     return <div className="min-h-screen flex items-center justify-center">
       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-neutral-800"></div>
     </div>;
+  }
+
+  if (hasError) {
+    return <PublicDataError backTo="/" />;
   }
 
   return (
