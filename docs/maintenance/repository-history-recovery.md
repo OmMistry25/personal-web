@@ -2,8 +2,9 @@
 
 ## Status
 
-Recovery prepared on August 18, 2026. Production and the GitHub `main` branch
-remain unchanged until the recovery pull request is reviewed and merged.
+Recovery and Vercel preview verification completed on August 18, 2026.
+Production and the GitHub `main` branch remain unchanged until the recovery
+pull request is reviewed and merged.
 
 ## Incident summary
 
@@ -91,6 +92,38 @@ The clean installation retains the documented `glob@10.5.0` deprecation
 notice. The production build retains the documented Browserslist age notice
 and zero-byte unreferenced vendor artifact. Neither warning is a new recovery
 finding.
+
+## Vercel preview verification
+
+Vercel deployment `D2XoaFcdmAvPybySXebH4QF8Cta9` for recovery commit
+`aa18401` reached `Ready` at:
+
+- `https://personal-web-git-codex-recover-main-e8699a-ommistry25s-projects.vercel.app`
+
+The preview passed the publication gate:
+
+- the home page and all six public sections loaded with production content,
+  links, and deterministic ordering
+- Projects presented all eight production entries in the same order after its
+  Supabase request completed
+- Writing presented all ten production entries in the same order
+- Work presented all eight production entries in the same order
+- representative Writing and Work detail routes matched production
+- the About heading and single YouTube embed URL matched production
+- Contact retained the production email link
+- a direct unknown-route request returned the application shell, confirming the
+  SPA fallback
+- `/admin` redirected to `/admin/login` and exposed only empty email and
+  password inputs plus the sign-in control; no credential or authenticated
+  operation was exercised
+- no browser console error was recorded; the deliberate unknown-route check
+  produced the expected React Router no-match warning
+- home and representative Writing-detail geometry, document dimensions, and
+  typography matched production exactly at `390x844`, `768x1024`, and
+  `1280x800`
+
+The Vercel toolbar appeared only on the preview and was excluded from the
+application comparison.
 
 ## Impact
 
